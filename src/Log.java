@@ -13,6 +13,22 @@ public class Log {
         this.page = page;
     }
 
+    public Log(String date, String time) {
+        this.date = date;
+        this.time = time;
+    }
+
+    public String extractHours() {
+        String[] split = time.split(":");
+        return split[0];
+    }
+
+    @Override
+    public String toString() {
+        return this.date + " " + this.time + "\n";
+//        +" "+ this.ip+" "+this.page;
+    }
+
 
     public String getDate() {
         return date;

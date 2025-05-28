@@ -52,6 +52,14 @@ class Test{
         manager.showStat();
         String ip = "192.168.1.40";
         manager.getRequestsByIP(ip);
+        manager.extraFunctions();
+       String dateStar = "2025-03-22";
+       String dateEnd = "2025-03-24";
+      var list = manager.filterDatesByRange(dateStar,dateEnd);
+      for(Log log:list){
+          System.out.println(log);
+      }
+
     }
 
 
