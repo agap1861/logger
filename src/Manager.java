@@ -1,23 +1,25 @@
 
 
-import java.io.BufferedReader;
-import java.io.File;
-import java.io.FileReader;
-import java.io.IOException;
+import java.io.*;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
 public class Manager {
-    private File file;
+    private File fileLogs;
     private List<Log> logs = new ArrayList<>();
     private Map<String, Integer> pages = new HashMap<>();
     private Map<String, Integer> ips = new HashMap<>();
 
+    Manager(File fileLogs) {
+        this.fileLogs = fileLogs;
 
-    public void readLogs(File file) {
-        try (BufferedReader reader = new BufferedReader(new FileReader(file.getPath()))) {
+    }
+
+
+    public void readLogs() {
+        try (BufferedReader reader = new BufferedReader(new FileReader(fileLogs.getPath()))) {
             String line = "";
             while (reader.ready()) {
                 line = reader.readLine();
@@ -77,6 +79,35 @@ public class Manager {
 
 
     }
+
+    private String totalNumberOfVisit() {//Метод для получения статистики, а не вывода в консоль
+        return "Общее количество посещений: " + logs.size();
+    }
+
+    private String mostPopularPAge() {//Метод для получения статистики, а не вывода в консоль
+        return "Самая популярная страница: " + getThePopularPage().getName() + " ("
+                + getThePopularPage().getMaxCount() + " посещения)";
+    }
+
+    private String uniqueIp() {//Метод для получения статистики, а не вывода в консоль
+        return "Уникальных IP: " + getUniqueIp();
+    }
+
+    private String ipMostRequests() {//Метод для получения статистики, а не вывода в консоль
+        return "IP с наибольшим числом запросов: " + getThePopularIP().getName() + " (" +
+                getThePopularIP().getMaxCount() + " запроса)";
+    }
+
+    private List<String> gelAllStat() {
+
+        List<String> stat = new ArrayList<>();
+        stat.add(totalNumberOfVisit());
+        stat.add(mostPopularPAge());
+        stat.add(uniqueIp());
+        stat.add(ipMostRequests());
+        return stat;
+    }
+
 
     public void extraFunctions() {
         Map<String, Integer> group = groupLogsByDate();
@@ -177,6 +208,44 @@ public class Manager {
         }
         range.sort(timeComparator);
         return range;
+    }
+
+    public void saveStat() {
+
+
+        try (BufferedWriter writer = new BufferedWriter(new FileWriter(initFileStat().getPath()))) {
+
+
+            List<String> stats = gelAllStat();
+            for (String stat : stats) {
+                String line = stat;
+                writer.write(line);
+                writer.newLine();
+            }
+
+
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    private File initFileStat() {
+        String nameOfFile = "stat";
+        File fileStat = null;
+        try {
+            fileStat = File.createTempFile(nameOfFile, ".txt");
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+        if (!fileStat.exists()) {
+            try {
+                fileStat.createNewFile();
+
+            } catch (IOException e) {
+                throw new RuntimeException();
+            }
+        }
+        return fileStat;
     }
 
 

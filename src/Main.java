@@ -7,10 +7,10 @@ public class Main {
     public static void main(String[] args) {
         Test test = new Test();
         test.logger();
-        Scanner scanner = new Scanner(System.in);
-        Manager manager = new Manager();
-        String path = "C:/Users/danil/Desktop/logs.txt";
-        File file = new File(path);
+//        Scanner scanner = new Scanner(System.in);
+//        Manager manager = new Manager();
+//        String path = "C:/Users/danil/Desktop/logs.txt";
+//        File file = new File(path);
 
       /*  while (true) {
             print();
@@ -45,10 +45,11 @@ public class Main {
 }
 class Test{
     public void logger(){
-        Manager manager = new Manager();
+
         String path = "C:/Users/danil/Desktop/logs.txt";
         File file = new File(path);
-        manager.readLogs(file);
+        Manager manager = new Manager(file);
+        manager.readLogs();
         manager.showStat();
         String ip = "192.168.1.40";
         manager.getRequestsByIP(ip);
@@ -59,6 +60,7 @@ class Test{
       for(Log log:list){
           System.out.println(log);
       }
+        manager.saveStat();
 
     }
 
