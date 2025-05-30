@@ -43,17 +43,16 @@ public class Main {
         System.out.println("4. Выйти");
     }
 }
-class Test{
-    public void logger(){
+class Test {
+    public void logger() {
 
         String path = "C:/Users/danil/Desktop/logs.txt";
         File file = new File(path);
         Manager manager = new Manager(file);
         manager.readLogs();
-        manager.showStat();
-        String ip = "192.168.1.40";
-        manager.getRequestsByIP(ip);
-        manager.extraFunctions();
+        System.out.println(manager.gelAllStat());
+
+
        String dateStar = "2025-03-22";
        String dateEnd = "2025-03-24";
       var list = manager.filterDatesByRange(dateStar,dateEnd);
@@ -66,4 +65,5 @@ class Test{
 
 
 }
+
 

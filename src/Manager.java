@@ -9,8 +9,7 @@ import java.util.Map;
 public class Manager {
     private File fileLogs;
     private List<Log> logs = new ArrayList<>();
-    private Map<String, Integer> pages = new HashMap<>();
-    private Map<String, Integer> ips = new HashMap<>();
+
 
     Manager(File fileLogs) {
         this.fileLogs = fileLogs;
@@ -30,8 +29,7 @@ public class Manager {
                 String page = split[3];
                 Log log = new Log(data, time, ip, page);
                 logs.add(log);
-                addNewPageInMap(page);
-                addNewIPInMap(ip);
+
 
             }
         } catch (IOException e) {
@@ -40,45 +38,41 @@ public class Manager {
         }
     }
 
-    private void addNewPageInMap(String page) {
-        if (pages.containsKey(page)) {
-            int oldValue = pages.get(page);
-            Integer newValue = oldValue + 1;
-            pages.replace(page, oldValue, newValue);
+    private Map<String,Integer> countOfRequestsByOnePage() {
+        Map<String,Integer> pages = new HashMap<>();
+        for (Log log: logs){
+            String page = log.getPage();
+            if (pages.containsKey(page)) {
+                int oldValue = pages.get(page);
+                Integer newValue = oldValue + 1;
+                pages.replace(page, oldValue, newValue);
 
-        } else {
-            pages.put(page, 1);
+            } else {
+                pages.put(page, 1);
+            }
+
         }
-
+        return pages;
 
     }
 
-    private void addNewIPInMap(String ip) {
-        if (ips.containsKey(ip)) {
-            int oldValue = ips.get(ip);
-            Integer newValue = oldValue + 1;
-            ips.replace(ip, oldValue, newValue);
+    private Map<String,Integer> countOfRequestsByOneIp() {
+        Map<String,Integer> ips = new HashMap<>();
+        for (Log log: logs){
+            String ip = log.getIp();
+            if (ips.containsKey(ip)) {
+                int oldValue = ips.get(ip);
+                Integer newValue = oldValue + 1;
+                ips.replace(ip, oldValue, newValue);
 
-        } else {
-            ips.put(ip, 1);
+            } else {
+                ips.put(ip, 1);
+            }
         }
+        return ips;
+
     }
 
-    public void showStat() {
-        if (logs.isEmpty()) {
-            System.out.println("Сначала загрузи логи потом, будем считать");
-            return;
-        }
-        System.out.println("Общее количество посещений: " + logs.size());
-
-        System.out.println("Самая популярная страница: " + getThePopularPage().getName() + " ("
-                + getThePopularPage().getMaxCount() + " посещения)");
-        System.out.println("Уникальных IP: " + getUniqueIp());
-        System.out.println("IP с наибольшим числом запросов: " + getThePopularIP().getName() + " (" +
-                getThePopularIP().getMaxCount() + " запроса)");
-
-
-    }
 
     private String totalNumberOfVisit() {//Метод для получения статистики, а не вывода в консоль
         return "Общее количество посещений: " + logs.size();
@@ -98,7 +92,7 @@ public class Manager {
                 getThePopularIP().getMaxCount() + " запроса)";
     }
 
-    private List<String> gelAllStat() {
+    public List<String> gelAllStat() {
 
         List<String> stat = new ArrayList<>();
         stat.add(totalNumberOfVisit());
@@ -136,6 +130,7 @@ public class Manager {
     }
 
     private StatisticMax getThePopularPage() {
+        Map<String,Integer> pages = countOfRequestsByOnePage();
         int maxCount = 0;
         String maxPage = "";
         for (String name : pages.keySet()) {
@@ -149,6 +144,7 @@ public class Manager {
     }
 
     private StatisticMax getThePopularIP() {
+        Map<String,Integer> ips = countOfRequestsByOneIp();
         int maxCount = 0;
         String maxIP = "";
         for (String name : ips.keySet()) {
